@@ -3,10 +3,9 @@ import apiClient, { setClientToken } from './Credentials'
 import Dropdown from "./components/Dropdown";
 import Login from "./components/login";
 import Listbox from "./components/Listbox";
-import Detail from "./components/Detail";
 import UserInfo from "./components/UserInfo";
 import Logout from "./components/Logout"
-import { BrowserRouter as Router, Link } from "react-router-dom";
+import { BrowserRouter as Router } from "react-router-dom";
 import { Accordion } from "react-bootstrap";
  
 
@@ -20,32 +19,28 @@ function App() {
   const [userTracks, setUserTracks] = useState([])
 
   useEffect(() => {
-      let hash = window.location.hash
-      window.location.hash=""
-      if (!token && hash) {
-        const _token = hash.split("&")[0].split("=")[1];
-        window.localStorage.setItem("token", _token);
-        setToken(_token)
-        setClientToken(_token);
+    let hash = window.location.hash;
+    window.location.hash = "";
+    if (!token && hash) {
+      const _token = hash.split("&")[0].split("=")[1];
+      window.localStorage.setItem("token", _token);
+      setToken(_token);
+      setClientToken(_token);
 
-          apiClient.get("browse/categories").then((response) => {
-            setGenres({
-              selectedGenre: genres.selectedGenre,
-              listOfGenres: response.data.categories.items,
-            });
-            apiClient.get("me/top/artists").then((response) => {
-              setArtists(response.data.items);
-            });
-            apiClient.get("me/top/tracks").then((response) => {
-              setUserTracks(response.data.items);
-            });
-          });
-        
-      } 
-      
-      
-      
-},[])
+      apiClient.get("browse/categories").then((response) => {
+        setGenres({
+          selectedGenre: genres.selectedGenre,
+          listOfGenres: response.data.categories.items,
+        });
+        apiClient.get("me/top/artists").then((response) => {
+          setArtists(response.data.items);
+        });
+        apiClient.get("me/top/tracks").then((response) => {
+          setUserTracks(response.data.items);
+        });
+      });
+    }
+  }, [genres.selectedGenre, token]);
 
   const genreChanged = val => {
     setGenres({
