@@ -29,7 +29,7 @@ function App() {
 
       apiClient.get("browse/categories").then((response) => {
         setGenres({
-          selectedGenre: genres.selectedGenre,
+          selectedGenre: '',
           listOfGenres: response.data.categories.items,
         });
         apiClient.get("me/top/artists").then((response) => {
@@ -43,19 +43,28 @@ function App() {
   }, [genres.selectedGenre, token]);
 
   const genreChanged = val => {
-    setGenres({
-      selectedGenre: val,
-      listOfGenres: genres.listOfGenres
-  })
-  apiClient.get(`browse/categories/${genres.selectedGenre}/playlists?limit=10`).then((response) => {
-    setPlaylist({
-      selectedPlaylist: playlist.selectedPlaylist,
-      listOfPlaylists: response.data.playlists.items
-    })
-  })
+    if (genres.selectedGenre) {
+      apiClient
+        .get(`browse/categories/${val}/playlists?limit=10`)
+        .then((response) => {
+          setPlaylist({
+            selectedPlaylist: playlist.selectedPlaylist,
+            listOfPlaylists: response.data.playlists.items,
+          });
+        });
+    }
+      setGenres({
+        selectedGenre: val,
+        listOfGenres: genres.listOfGenres,
+      });
+
+
+
+      
+    }
     
 
-  }
+  
 
   const playlistChanged = val => {
     setPlaylist({
